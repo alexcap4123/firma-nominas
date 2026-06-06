@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Nómina</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            padding: 30px;
+        }
+        .header {
+            background: linear-gradient(135deg, #1F3864, #2E75B6);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { font-size: 20px; }
+        .header p { font-size: 13px; opacity: 0.8; }
+        .btn-salir {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        .card h2 { color: #1F3864; margin-bottom: 15px; font-size: 16px; }
+        .nomina-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+        .nomina-row:last-child { border-bottom: none; }
+        .nomina-row span:last-child { font-weight: bold; color: #1F3864; }
+        .total {
+            background: #f0f4f8;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: bold;
+            color: #1F3864;
+            margin-top: 10px;
+        }
+        .btn-firmar {
+            width: 100%;
+            padding: 15px;
+            background: #2E75B6;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn-firmar:hover { background: #1F3864; }
+        .firmado {
+            text-align: center;
+            padding: 20px;
+            background: #E2EFDA;
+            border-radius: 10px;
+            color: #375623;
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div>
+            <h1>📄 Firma Nóminas</h1>
+            <p>Bienvenido, <strong>Juan García</strong></p>
+        </div>
+        <button class="btn-salir" onclick="window.location='index.html'">Cerrar sesión</button>
+    </div>
+
+    <div class="card">
+        <h2>🗓️ Nómina — Mayo 2026</h2>
+        <div class="nomina-row">
+            <span>Salario base</span>
+            <span>1.800,00 €</span>
+        </div>
+        <div class="nomina-row">
+            <span>Plus transporte</span>
+            <span>150,00 €</span>
+        </div>
+        <div class="nomina-row">
+            <span>Horas extra</span>
+            <span>120,00 €</span>
+        </div>
+        <div class="nomina-row">
+            <span>Seguridad Social (trabajador)</span>
+            <span>- 135,00 €</span>
+        </div>
+        <div class="nomina-row">
+            <span>IRPF (15%)</span>
+            <span>- 270,00 €</span>
+        </div>
+        <div class="total">
+            <span>💰 NETO A COBRAR</span>
+            <span>1.665,00 €</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>✍️ Firmar nómina</h2>
+        <p style="color:#888; font-size:13px; margin-bottom:15px;">Al firmar confirmas que has recibido y revisado tu nómina de Mayo 2026.</p>
+        <button class="btn-firmar" onclick="firmar()">✅ Firmar nómina</button>
+        <div class="firmado" id="firmado">
+            ✅ Nómina firmada correctamente el <span id="fecha"></span>
+        </div>
+    </div>
+
+    <script>
+        function firmar() {
+            const ahora = new Date();
+            const fecha = ahora.toLocaleDateString('es-ES') + ' a las ' + ahora.toLocaleTimeString('es-ES');
+            document.getElementById('fecha').textContent = fecha;
+            document.getElementById('firmado').style.display = 'block';
+            document.querySelector('.btn-firmar').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
