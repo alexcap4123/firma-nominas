@@ -6,11 +6,7 @@
     <title>Mi Nómina</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: Arial, sans-serif;
-            background: #f0f4f8;
-            padding: 30px;
-        }
+        body { font-family: Arial, sans-serif; background: #f0f4f8; padding: 30px; }
         .header {
             background: linear-gradient(135deg, #1F3864, #2E75B6);
             color: white;
@@ -60,6 +56,37 @@
             color: #1F3864;
             margin-top: 10px;
         }
+        .pdf-box {
+            border: 2px dashed #2E75B6;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+            color: #2E75B6;
+        }
+        .pdf-box:hover { background: #f0f4f8; }
+        #pdf-preview {
+            width: 100%;
+            height: 400px;
+            border: none;
+            border-radius: 8px;
+            display: none;
+            margin-top: 10px;
+        }
+        .sms-box { display: none; margin-top: 15px; }
+        .sms-box p { color: #555; font-size: 13px; margin-bottom: 10px; }
+        .sms-box input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: center;
+            letter-spacing: 8px;
+            outline: none;
+        }
+        .sms-box input:focus { border-color: #2E75B6; }
         .btn-firmar {
             width: 100%;
             padding: 15px;
@@ -72,6 +99,17 @@
             margin-top: 10px;
         }
         .btn-firmar:hover { background: #1F3864; }
+        .btn-sms {
+            width: 100%;
+            padding: 13px;
+            background: #1F3864;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
         .firmado {
             text-align: center;
             padding: 20px;
@@ -84,61 +122,99 @@
     </style>
 </head>
 <body>
-
     <div class="header">
         <div>
             <h1>📄 Firma Nóminas</h1>
-            <p>Bienvenido, <strong>Juan García</strong></p>
+            <p>Bienvenido, <strong id="nombre-trabajador"></strong></p>
         </div>
-        <button class="btn-salir" onclick="window.location='index.html'">Cerrar sesión</button>
+        <button class="btn-salir" onclick="cerrarSesion()">Cerrar sesión</button>
     </div>
 
     <div class="card">
         <h2>🗓️ Nómina — Mayo 2026</h2>
-        <div class="nomina-row">
-            <span>Salario base</span>
-            <span>1.800,00 €</span>
+        <div class="nomina-row"><span>Salario base</span><span>1.800,00 €</span></div>
+        <div class="nomina-row"><span>Plus transporte</span><span>150,00 €</span></div>
+        <div class="nomina-row"><span>Horas extra</span><span>120,00 €</span></div>
+        <div class="nomina-row"><span>Seguridad Social</span><span>- 135,00 €</span></div>
+        <div class="nomina-row"><span>IRPF (15%)</span><span>- 270,00 €</span></div>
+        <div class="total"><span>💰 NETO A COBRAR</span><span>1.665,00 €</span></div>
+    </div>
+
+    <div class="card">
+        <h2>📎 Documento nómina (PDF)</h2>
+        <div class="pdf-box" onclick="document.getElementById('pdf-input').click()">
+            📁 Haz clic para subir el PDF de la nómina
         </div>
-        <div class="nomina-row">
-            <span>Plus transporte</span>
-            <span>150,00 €</span>
-        </div>
-        <div class="nomina-row">
-            <span>Horas extra</span>
-            <span>120,00 €</span>
-        </div>
-        <div class="nomina-row">
-            <span>Seguridad Social (trabajador)</span>
-            <span>- 135,00 €</span>
-        </div>
-        <div class="nomina-row">
-            <span>IRPF (15%)</span>
-            <span>- 270,00 €</span>
-        </div>
-        <div class="total">
-            <span>💰 NETO A COBRAR</span>
-            <span>1.665,00 €</span>
-        </div>
+        <input type="file" id="pdf-input" accept=".pdf" style="display:none" onchange="mostrarPDF(event)">
+        <iframe id="pdf-preview"></iframe>
     </div>
 
     <div class="card">
         <h2>✍️ Firmar nómina</h2>
-        <p style="color:#888; font-size:13px; margin-bottom:15px;">Al firmar confirmas que has recibido y revisado tu nómina de Mayo 2026.</p>
-        <button class="btn-firmar" onclick="firmar()">✅ Firmar nómina</button>
+        <p style="color:#888; font-size:13px; margin-bottom:15px;">Al firmar confirmas que has recibido y revisado tu nómina.</p>
+        <button class="btn-firmar" onclick="pedirCodigo()">📱 Enviar código SMS para firmar</button>
+        <div class="sms-box" id="sms-box">
+            <p>📱 Código enviado al teléfono <strong id="telefono-mask"></strong>. Introdúcelo:</p>
+            <input type="text" id="codigo-input" placeholder="000000" maxlength="6">
+            <button class="btn-sms" onclick="verificarCodigo()">✅ Verificar y firmar</button>
+        </div>
         <div class="firmado" id="firmado">
             ✅ Nómina firmada correctamente el <span id="fecha"></span>
         </div>
     </div>
 
     <script>
-        function firmar() {
-            const ahora = new Date();
-            const fecha = ahora.toLocaleDateString('es-ES') + ' a las ' + ahora.toLocaleTimeString('es-ES');
-            document.getElementById('fecha').textContent = fecha;
-            document.getElementById('firmado').style.display = 'block';
-            document.querySelector('.btn-firmar').style.display = 'none';
+        let codigoSMS = "";
+        let trabajador = null;
+
+        window.onload = function() {
+            const datos = localStorage.getItem("trabajador");
+            if (!datos) {
+                window.location.href = "index.html";
+                return;
+            }
+            trabajador = JSON.parse(datos);
+            document.getElementById("nombre-trabajador").textContent = trabajador.nombre;
+        };
+
+        function cerrarSesion() {
+            localStorage.removeItem("trabajador");
+            window.location.href = "index.html";
+        }
+
+        function mostrarPDF(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                const preview = document.getElementById("pdf-preview");
+                preview.src = url;
+                preview.style.display = "block";
+                document.querySelector(".pdf-box").textContent = "✅ PDF cargado: " + file.name;
+            }
+        }
+
+        function pedirCodigo() {
+            codigoSMS = Math.floor(100000 + Math.random() * 900000).toString();
+            const tel = trabajador.telefono;
+            const mask = tel.substring(0, 3) + "****" + tel.substring(7);
+            document.getElementById("telefono-mask").textContent = mask;
+            document.getElementById("sms-box").style.display = "block";
+            document.querySelector(".btn-firmar").style.display = "none";
+            alert("📱 SIMULACIÓN: Tu código SMS es: " + codigoSMS);
+        }
+
+        function verificarCodigo() {
+            const introducido = document.getElementById("codigo-input").value;
+            if (introducido === codigoSMS) {
+                const ahora = new Date();
+                const fecha = ahora.toLocaleDateString('es-ES') + ' a las ' + ahora.toLocaleTimeString('es-ES');
+                document.getElementById("fecha").textContent = fecha;
+                document.getElementById("firmado").style.display = "block";
+                document.getElementById("sms-box").style.display = "none";
+            } else {
+                alert("❌ Código incorrecto. Inténtalo de nuevo.");
+            }
         }
     </script>
-
 </body>
 </html>

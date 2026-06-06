@@ -65,20 +65,19 @@
         <button onclick="login()">Entrar</button>
         <p class="error" id="error">Usuario o contraseña incorrectos</p>
     </div>
-
     <script>
         const trabajadores = [
-            { usuario: "juan.garcia", password: "1234", nombre: "Juan García" },
-            { usuario: "maria.lopez", password: "1234", nombre: "María López" },
-            { usuario: "admin", password: "admin123", nombre: "Administrador" }
+            { usuario: "juan.garcia", password: "1234", nombre: "Juan García", telefono: "612345678" },
+            { usuario: "maria.lopez", password: "1234", nombre: "María López", telefono: "698765432" },
+            { usuario: "admin", password: "admin123", nombre: "Administrador", telefono: "600000000" }
         ];
-
         function login() {
             const usuario = document.getElementById("usuario").value;
             const password = document.getElementById("password").value;
             const trabajador = trabajadores.find(t => t.usuario === usuario && t.password === password);
             if (trabajador) {
-                alert("¡Bienvenido, " + trabajador.nombre + "!");
+                localStorage.setItem("trabajador", JSON.stringify(trabajador));
+                window.location.href = "nomina.html";
             } else {
                 document.getElementById("error").style.display = "block";
             }
